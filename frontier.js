@@ -3,7 +3,7 @@ var fs = require('fs');
 
 var options = {
   host: 'f9cdn.azureedge.net',
-  path: '/static/SalesData.js?true=returnJson&true=returnJson'
+  path: '/static/SalesDataV2.js?true=returnJson&true=returnJson'
 };
 
 callback = function(response) {
