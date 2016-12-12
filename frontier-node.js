@@ -1,5 +1,6 @@
 var http = require('http');
 var fs = require('fs');
+var FlightsAnalyzer = require("./frontier_module.es6");
 
 var options = {
   host: 'f9cdn.azureedge.net',
@@ -22,20 +23,27 @@ callback = function(response) {
 
     // displayDeals(data);
 
-    let deals = extractDeals(data);
+    // let deals = extractDeals(data);
+    const analyzer = new FlightsAnalyzer(data);
 
-    writeToFile(`raw_json/${Date.now()}_frontier_raw`, data)
-    writeToFile(`deals_list/${Date.now()}_extracted_deals`, data)
+    writeToFile(`frontier_raw`, data, "raw_json")
+    writeToFile(`extracted_deals`, analyzer.deals, "deals_list")
+    writeToFile("cities_list", analyzer.citiesList(), "cities")
 
-    const dealMap = mapDeals(deals);
     if(process.argv[2] && process.argv[3]) {
-      console.log(newMatchCities(dealMap, process.argv[2], process.argv[3]));
+      const matches = analyzer.matchCities(process.argv[2], process.argv[3]);
+      writeToFile(`city1_${process.argv[2].replace(/ /g, "_")}_city2_${process.argv[3].replace(/ /g, "_")}`, matches, "union_results")
+      console.log(matches)
     } else if(process.argv[2]) {
-      console.log(newMatchDeals(dealMap, process.argv[2]))
+      const matches = analyzer.matchDeals(process.argv[2]);
+      writeToFile(`from_${origin.replace(/ /g, "_")}`, matches, "search_results")
+      console.log(matches)
     } else {
       // console.log(extractOrigins(data));
       // displayDeals(data);
-      console.log(mapDeals(deals))
+      const dealMap = analyzer.dealMap;
+      writeToFile(`dealmap`, dealMap, "dealmaps")
+      // console.log(dealMap)
     }
     
   });
@@ -109,7 +117,7 @@ function mapDeals(deals) {
     linkObject.departures.push(deal)
   }
 
-  writeToFile(`dealmaps/${Date.now()}_dealmap`, links)
+  writeToFile(`${Date.now()}_dealmap`, links, "dealmaps")
 
   return links;
 }
@@ -159,7 +167,7 @@ function newMatchDeals(dealMap, origin) {
     }
   }
 
-  writeToFile(`search_results/${Date.now()}_from_${origin.replace(/ /g, "_")}`, matches)
+  writeToFile(`${Date.now()}_from_${origin.replace(/ /g, "_")}`, matches, "search_results")
 
   return matches;
 
@@ -198,7 +206,7 @@ function newMatchCities(dealMap, city1, city2) {
     matches[destination][`${city1} Flights`] = firstCityDeals[destination];
     matches[destination][`${city2} Flights`] = secondCityDeals[destination];
   }
-  writeToFile(`union_results/${Date.now()}_city1_${city1.replace(/ /g, "_")}_city2_${city2.replace(/ /g, "_")}`, matches)
+  writeToFile(`${Date.now()}_city1_${city1.replace(/ /g, "_")}_city2_${city2.replace(/ /g, "_")}`, matches, "union_results")
 
   return matches;
 }
@@ -276,11 +284,15 @@ function matchCities(deals, city1, city2) {
   }
 }
 
-function writeToFile(filename, data) {
-  fs.writeFile(`${filename}.json`, JSON.stringify(data, null, 2), function(err) {
+function writeToFile (filename, data, directory = ".") {
+  if ( directory != "." && !fs.existsSync(directory)){
+    fs.mkdirSync(directory);
+  }
+  const fullFilename = `${Date.now()}_${filename}`
+  fs.writeFile(`${directory}/${fullFilename}.json`, JSON.stringify(data, null, 2), function(err) {
     if(err) {
         return console.log(err);
     }
-    console.log(`${filename}.json was saved!`);
+    console.log(`${fullFilename}.json was saved!`);
   });
 }
