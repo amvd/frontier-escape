@@ -1,0 +1,30 @@
+{
+  "name": "frontier-escape",
+  "version": "0.5.0",
+  "description": "",
+  "main": "frontier-node.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amvd/frontier-escape.git"
+  },
+  "author": "Armand De Asis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amvd/frontier-escape/issues"
+  },
+  "homepage": "https://github.com/amvd/frontier-escape#readme",
+  "devDependencies": {
+    "eslint": "^3.12.0",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-config-google": "^0.7.1",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^3.0.1",
+    "eslint-plugin-promise": "^3.4.0",
+    "eslint-plugin-react": "^6.8.0",
+    "eslint-plugin-standard": "^2.0.1"
+  }
+}

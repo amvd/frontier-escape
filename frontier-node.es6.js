@@ -9,8 +9,8 @@ var options = {
   path: '/static/SalesDataV2.js?true=returnJson&true=returnJson'
 }
 
-callback = function (response) {
-  var str = ''
+const callback = function (response) {
+  let str = ''
 
   response.on('data', function (chunk) {
     str += chunk
@@ -19,12 +19,6 @@ callback = function (response) {
   // the whole response has been recieved, so we just print it out here
   response.on('end', function () {
     const data = eval(str)
-
-    // console.log(data)
-
-    // displayDeals(data);
-
-    // let deals = extractDeals(data);
     const analyzer = new FlightsAnalyzer(data)
 
     writeToFile(`frontier_raw`, data, 'raw_json')
@@ -37,7 +31,7 @@ callback = function (response) {
       console.log(matches)
     } else if (process.argv[2]) {
       const matches = analyzer.matchDeals(process.argv[2])
-      writeToFile(`from_${origin.replace(/ /g, '_')}`, matches, 'search_results')
+      writeToFile(`from_${process.argv[2].replace(/ /g, '_')}`, matches, 'search_results')
       console.log(matches)
     } else {
       // console.log(extractOrigins(data));
@@ -49,12 +43,14 @@ callback = function (response) {
   })
 }
 
+http.request(options, callback).end()
+
 function returnJson (str) {
   return str
 }
 
 function writeToFile (filename, data, directory = '.') {
-  if (directory != '.' && !fs.existsSync(directory)) {
+  if (directory !== '.' && !fs.existsSync(directory)) {
     fs.mkdirSync(directory)
   }
   const fullFilename = `${Date.now()}_${filename}`
