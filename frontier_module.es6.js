@@ -1,14 +1,10 @@
 (function () {
   'use-strict'
 
-  // var fs = require('fs');
-
   class FlightsAnalyzer {
     constructor (rawData) {
       this.deals = this._extractDeals(rawData)
       this._mapDeals()
-      // this._writeToFile(`${Date.now()}_frontier_raw`, rawData, "raw_json")
-      // this._writeToFile(`${Date.now()}_extracted_deals`, this.deals, "deals_list")
 
       console.log(this.deals)
     }
@@ -85,7 +81,6 @@
         matches[destination][`${city1} Flights`] = firstCityDeals[destination]
         matches[destination][`${city2} Flights`] = secondCityDeals[destination]
       }
-      // this._writeToFile(`${Date.now()}_city1_${city1.replace(/ /g, "_")}_city2_${city2.replace(/ /g, "_")}`, matches, "union_results")
 
       return matches
     }
@@ -112,7 +107,6 @@
       while (iGroup--) {
         let group = rawData[iGroup]
 
-        // console.log("City: ", group.FromCity);
         airports.push(group.FromCity)
 
         let iDeals = group.Deals.length
@@ -141,22 +135,8 @@
         linkObject.departures.push(deal)
       }
 
-      // this._writeToFile(`${Date.now()}_dealmap`, links, "dealmaps")
-
       this.dealMap = links
     }
-
-    // _writeToFile ( filename, data, directory = "." ) {
-    //   if ( directory != "." && !fs.existsSync(directory)){
-    //     fs.mkdirSync(directory);
-    //   }
-    //   fs.writeFile(`${directory}/${filename}.json`, JSON.stringify(data, null, 2), function(err) {
-    //     if(err) {
-    //         return console.log(err);
-    //     }
-    //     console.log(`${filename}.json was saved!`);
-    //   });
-    // }
   }
 
   if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
