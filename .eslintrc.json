@@ -1,6 +1,7 @@
 {
     "extends": "standard",
     "rules": {
-      "no-eval": ["off"]
+      "no-eval": ["off"],
+      "semi": [2, "always"]
     }
 }
