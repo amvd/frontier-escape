@@ -10,6 +10,8 @@ const parseCSV = Promise.promisify(csv.parse);
 
 const airportsFile = 'airports.dat';
 
+const COLUMNS_TO_INCLUDE = ['id', 'name', 'iata', 'city', 'latitude', 'longitude'];
+
 readFile(airportsFile, 'utf8').then((contents) => {
   return parseCSV(contents, {auto_parse: true});
 }).then((records) => {
@@ -37,7 +39,11 @@ function mapColumnsToValues (columnList, valueList) {
   const L = columnList.length;
   let i = 0;
   while (i < L) {
-    resultHash[columnList[i]] = valueList[i];
+    const columnName = columnList[i];
+    if (COLUMNS_TO_INCLUDE.indexOf(columnName) > -1) {
+      resultHash[columnName] = valueList[i];
+    }
+
     i++;
   }
   return resultHash;
